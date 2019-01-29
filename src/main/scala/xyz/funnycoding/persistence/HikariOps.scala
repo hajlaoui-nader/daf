@@ -1,7 +1,7 @@
-package persistence
+package xyz.funnycoding.persistence
 
 import cats.effect.IO
-import config.DBConf
+import xyz.funnycoding.config.DBConf
 import com.zaxxer.hikari.util.UtilityElf.DefaultThreadFactory
 import com.zaxxer.hikari.{HikariConfig, HikariDataSource}
 import doobie.hikari.HikariTransactor

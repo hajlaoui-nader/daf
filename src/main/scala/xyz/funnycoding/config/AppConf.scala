@@ -1,4 +1,4 @@
-package config
+package xyz.funnycoding.config
 
 import com.typesafe.config._
 import pureconfig.error.ConfigReaderFailures

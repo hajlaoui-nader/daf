@@ -4,13 +4,13 @@ import cats.effect._
 import cats.implicits._
 import org.http4s.implicits._
 import org.http4s.server.blaze._
-import config._
-import persistence._
-import http.service._
+import xyz.funnycoding.config._
+import xyz.funnycoding.http.service._
 import org.http4s.server.Router
 
-
 object Server extends IOApp {
+
+  import xyz.funnycoding.persistence.{HikariOps, Migration}
 
   def run(args: List[String]): IO[ExitCode] =
     for {
@@ -23,7 +23,7 @@ object Server extends IOApp {
       dbConfig = appConfig.db
       _  <- Migration.withConfig(dbConfig)
       xa <- HikariOps.toTransactor(dbConfig)
-    } yield{
+    } yield {
       val value: IO[ExitCode] = BlazeServerBuilder[IO]
         .bindHttp(8080, "localhost")
         .withHttpApp(Router("/visitors" -> Visitors.service(xa)).orNotFound)
@@ -31,8 +31,8 @@ object Server extends IOApp {
         .compile
         .drain
         .as(ExitCode.Success)
-      value.unsafeRunSync
 
+      value.unsafeRunSync
 
     }
 }

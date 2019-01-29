@@ -1,7 +1,7 @@
-package persistence
+package xyz.funnycoding.persistence
 
 import cats.effect.IO
-import config.DBConf
+import xyz.funnycoding.config.DBConf
 import org.flywaydb.core.Flyway
 
 import scala.util.Try
@@ -16,7 +16,7 @@ object Migration {
     if (dbConfig.autoMigrate) {
       Try {
         val dataSource = HikariOps.toDataSource(dbConfig)
-        val flyway = new Flyway()
+        val flyway     = new Flyway()
         flyway.setDataSource(dataSource)
         val migrationsRun = flyway.migrate()
         dataSource.close()

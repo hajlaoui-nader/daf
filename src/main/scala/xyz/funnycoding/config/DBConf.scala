@@ -1,4 +1,4 @@
-package config
+package xyz.funnycoding.config
 
 import java.net.URI
 import enumeratum._
