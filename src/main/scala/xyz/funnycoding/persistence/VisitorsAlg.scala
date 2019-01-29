@@ -25,6 +25,7 @@ abstract class VisitorsAlg[F[_]: Effect] {
 
   def insert(newVisitor: NewVisitor): F[Either[InsertionError, Visitor]]
   def listVisitors: F[Seq[Visitor]]
+  def getVisitor(visitorId: VisitorId): F[Option[Visitor]]
 }
 
 object DoobieVisitorsAlg {
@@ -45,6 +46,15 @@ object DoobieVisitorsAlg {
       FROM visitors as v
     """.query[Visitor]
   }
+
+  private[persistence] def getVisitorQuery(visitorId: VisitorId) = {
+    sql"""
+        SELECT v.id, v.name
+        FROM visitors as v
+        WHERE v.id = $visitorId
+       LIMIT 1
+      """.query[Visitor]
+  }
 }
 
 class DoobieVisitorsAlg[F[_]: Effect](xa: Transactor[F]) extends VisitorsAlg[F] {
@@ -63,4 +73,7 @@ class DoobieVisitorsAlg[F[_]: Effect](xa: Transactor[F]) extends VisitorsAlg[F] 
 
 
   override def listVisitors: F[Seq[Visitor]] = listAllVisitors.to[List].transact(xa).map(_.toSeq)
+
+  override def getVisitor(visitorId: VisitorId): F[Option[Visitor]] = getVisitorQuery(visitorId)
+    .option.transact(xa)
 }

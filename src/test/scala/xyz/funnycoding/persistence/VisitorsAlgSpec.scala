@@ -19,6 +19,9 @@ class VisitorsAlgSpec  extends FunSpec with Matchers with H2DatabaseService {
         Right(inserted) = newVisitor
         listAfterInsert <- visitorsAlg.listVisitors
         _ = listAfterInsert should contain(inserted)
+        getVisitor <- visitorsAlg.getVisitor(inserted.visitorId)
+        Some(ins) = getVisitor
+        _ = ins shouldBe inserted
       } yield ()
       value.unsafeRunSync()
     }
